@@ -38,13 +38,42 @@ class SystemMonitor:
             'free' : memory_info.free
         }
     
+    def get_process_info(self):
+        processes = []
+
+        for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'status']):
+            try: 
+                processes.append({
+                    'pid' : proc.info['pid'],
+                    'name' : proc.info['name'],
+                    'cpu' : proc.info['cpu_percent'],
+                    'memory' : proc.info['memory_percent'],
+                    'status' : proc.info['status']
+                })
+
+            except Exception as e :
+                print("Error in the code", e)
+
+        return processes
     
+    def get_top_memory_process(self, processes, top_n=5):
+        sorted_process = sorted(processes, key= lambda x : x['memory'], reverse=True)
+        return sorted_process
+
 
     def run(self):
         while self.running:
             print("Info")
-            print(self.get_cpu_percent)
+          
             print(self.get_memory_info())
+            
+            processes  = self.get_top_memory_process(self.get_process_info())
+            print(processes)
+             
+            
+                
+                
+
             time.sleep(3)
 
 def main():
