@@ -20,10 +20,31 @@ class SystemMonitor:
     def signal_handler(self, signum, frame):
         self.running = False
         print("\nShutting down monitor....")
-  
+
+    def clear_screen(self):
+        os.system('clear' if os.name == 'posix' else 'cls')    
+    
+    def get_cpu_percent(self):
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        return cpu_percent
+
+    def get_memory_info(self):
+        memory_info = psutil.virtual_memory()
+        return{
+            'total' : memory_info.total,
+            'available' : memory_info.available,
+            'used' : memory_info.used,
+            'percent' : memory_info.percent,
+            'free' : memory_info.free
+        }
+    
+    
+
     def run(self):
         while self.running:
             print("Info")
+            print(self.get_cpu_percent)
+            print(self.get_memory_info())
             time.sleep(3)
 
 def main():
